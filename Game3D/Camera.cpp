@@ -16,11 +16,34 @@ void Camera::computeDir(float deltaAngle)
 	z_vector = -cos(angle_of_rotation);
 }
 
-void Camera::computeHeight(float amount)
+void Camera::computePitch(float deltaPitch)
 {
-	cam_y += amount;
-	printf("%.2f\n", y_vector);
+	pitch = deltaPitch;
 }
+
+void Camera::computeHeight(float deltaHeight)
+{
+	if (developer_view) //Only allow free movement on the y axis in developer mode.
+		cam_y += deltaHeight;
+}
+
+void Camera::jump(void)
+{
+	if (jumping && getYvector() < 2.25f)
+	{
+		setYvector(getYvector() + 0.15f);
+		if (getYvector() == 2.25f)
+		{
+			jumping = false;
+		}
+	}
+
+	if (!jumping && getYvector() >= 0)
+	{
+		setYvector(getYvector() - 0.15f);
+	}
+}
+
 void Camera::setAngleOfRot(float aor)
 {
 	angle_of_rotation = aor;
@@ -100,4 +123,51 @@ void Camera::setDeltaHeight(float d_height)
 float Camera::getDeltaHeight(void)
 {
 	return delta_height;
+}
+void Camera::setPitch(float d_pitch)
+{
+	pitch = d_pitch;
+}
+float Camera::getPitch(void)
+{
+	return pitch;
+}
+void Camera::setXorigin(float x)
+{
+	x_origin = x;
+}
+
+float Camera::getXorigin(void)
+{
+	return x_origin;
+}
+
+void Camera::setYorigin(float y)
+{
+	y_origin = y;
+}
+
+float Camera::getYorigin(void)
+{
+	return y_origin;
+}
+
+void Camera::jumpState(boolean isJumping)
+{
+	jumping = isJumping;
+}
+
+boolean Camera::isJumping(void)
+{
+	return jumping;
+}
+
+void Camera::devState(boolean dev_view)
+{
+	developer_view = dev_view;
+}
+
+boolean Camera::isDevView(void)
+{
+	return developer_view;
 }

@@ -11,6 +11,11 @@ class Camera
 		float delta_angle;
 		float delta_move;
 		float delta_height;
+		float pitch;
+		float x_origin;
+		float y_origin;
+		boolean jumping;
+		boolean developer_view;
 	public:
 		/* Constructor */
 		Camera() { };
@@ -18,7 +23,9 @@ class Camera
 		/* Change camera direction and position */
 		void computePos(float deltaMove);
 		void computeDir(float deltaAngle);
+		void computePitch(float deltaPitch);
 		void computeHeight(float deltaHeight);
+		void jump(void);
 
 		/* Getters and setters */
 		void setAngleOfRot(float aor);
@@ -41,6 +48,16 @@ class Camera
 		float getDeltaMove(void);
 		void setDeltaHeight(float d_height);
 		float getDeltaHeight(void);
+		void setPitch(float d_pitch);
+		float getPitch(void);
+		void setXorigin(float x);
+		float getXorigin(void);
+		void setYorigin(float y);
+		float getYorigin(void);
+		void jumpState(boolean jumping);
+		boolean isJumping(void);
+		void devState(boolean dev_view);
+		boolean isDevView(void);
 
 };
 

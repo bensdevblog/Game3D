@@ -9,6 +9,7 @@
 #define MOVE_LEFT 'a'
 #define MOVE_BACK 's'
 #define MOVE_RIGHT 'd'
+#define DEVELOPER_VIEW 'k'
 
 #define EXIT_KEY 27
 #define JUMP_KEY 32
@@ -56,6 +57,9 @@ void renderScene(void)
 	if (camera.getDeltaHeight())
 		camera.computeHeight(camera.getDeltaHeight());
 
+	if (camera.getPitch())
+		camera.computePitch(camera.getPitch());
+
 	// Clear Color and Depth Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -63,12 +67,11 @@ void renderScene(void)
 	glLoadIdentity();
 
 	// Set the camera
-	
 	gluLookAt(camera.getCamX(), 
 		camera.getCamY() + camera.getYvector(), 
 		camera.getCamZ(),
 		camera.getCamX() + camera.getXvector(), 
-		camera.getCamY() + camera.getYvector(), 
+		camera.getCamY() + camera.getYvector() + camera.getPitch(), 
 		camera.getCamZ() + camera.getZvector(),
 		0.0f, 1.0f, 0.0f);
 	// Draw ground
@@ -85,7 +88,7 @@ void renderScene(void)
 
 	//Draw 36 buildings
 	float spacing = 20.0f;
-	float bldg_height = 30.0f;
+	float bldg_height = 40.0f;
 	float bldg_width = 10.0f;
 	float h_offset = 0.0f;
 	float w_offset = 0.0f;
@@ -117,19 +120,26 @@ void keyPress(unsigned char key, int xx, int yy)
 	switch (key)
 	{
 		case MOVE_FWD:
-			camera.setDeltaMove(0.5f);
+			camera.setDeltaMove(0.08f);
 			break;
 		case MOVE_LEFT:
-			camera.setDeltaAngle(-0.01f);
+			camera.setDeltaAngle(-0.001f);
 			break;
 		case MOVE_BACK:
-			camera.setDeltaMove(-0.5f);
+			camera.setDeltaMove(-0.08f);
 			break;
 		case MOVE_RIGHT:
-			camera.setDeltaAngle(0.01f);
+			camera.setDeltaAngle(0.001f);
 			break;
 		case JUMP_KEY:
-			jumping = true;
+			camera.jumpState(true); //Jump
+			break;
+		case DEVELOPER_VIEW:
+			if (!camera.isDevView())
+				camera.devState(true);
+			else
+				camera.devState(false);
+				camera.setCamY(1.0f);
 			break;
 		case EXIT_KEY:
 			exit(0);
@@ -154,7 +164,7 @@ void keyRelease(unsigned char key, int xx, int yy)
 			camera.setDeltaAngle(0.0f);
 			break;
 		case JUMP_KEY:
-			//cam_y_vec = 0.0f;
+			//Do nothing.
 			break;
 	}
 }
@@ -189,33 +199,56 @@ void specialKeyRelease(int key, int x, int y)
 
 void mouseMove(int x, int y) 
 {
+	/*
+	if (x < camera.getXorigin())
+	{
+		camera.setDeltaAngle(-0.001f);
+	}
 
+	if (x > camera.getXorigin())
+	{
+		camera.setDeltaAngle(0.001f);
+	} 
+
+	*/
+
+	if (y < camera.getYorigin())
+	{
+		camera.setPitch(0.3f);
+	}
+
+	if (y > camera.getYorigin())
+	{
+		camera.setPitch(-0.3f);
+	}
 
 }
 
 void mouseButton(int button, int state, int x, int y) 
 {
+	if (button == GLUT_LEFT_BUTTON)
+	{
+		if (state == GLUT_DOWN)
+		{
+			//camera.setXorigin((float)x);
+			camera.setYorigin((float)y);
+		}
 
+		if (state == GLUT_UP)
+		{
+			//camera.setDeltaAngle(0.0f);
+			camera.setPitch(0.0f);
+		}
+	}
 }
 
+/* Animation timer */
 void timer(int val)
 {
 	int interval = 15;
 
-	if (jumping && camera.getYvector() < 2.25f)
-	{
-		camera.setYvector(camera.getYvector() + 0.15f);
-		printf("CAM Y VECTOR: %.2f\n", camera.getYvector());
-		if (camera.getYvector() == 2.25f)
-		{
-			jumping = false;
-		}
-	}
-	
-	if (!jumping && camera.getYvector() >= 0)
-	{
-		camera.setYvector(camera.getYvector() - 0.15f);
-	}
+	//Listen for jump events
+	camera.jump();
 
 	glutTimerFunc(interval, timer, val);
 }
@@ -250,6 +283,8 @@ void initCamera()
 
 	camera.setDeltaAngle(0.0f);
 	camera.setDeltaMove(0.0f);
+
+	camera.devState(false);
 }
 
 int main(int argc, char **argv) 
@@ -260,8 +295,8 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(800, 600);
-	glutCreateWindow("Lighthouse3D - GLUT Tutorial");
-	//glutFullScreen(); //lolfullscreenz
+	glutCreateWindow("Ben's 3D.. thing.");
+	glutFullScreen(); //lolfullscreenz
 
 	initCamera(); //Initialize camera.
 
