@@ -74,13 +74,14 @@ void renderScene(void)
 		camera.getCamY() + camera.getYvector() + camera.getPitch(), 
 		camera.getCamZ() + camera.getZvector(),
 		0.0f, 1.0f, 0.0f);
+
 	// Draw ground
 	glBegin(GL_QUADS);
 	{
-		glColor3f(0.0f, 1.0f, 0.0f);
+		glColor3f(0.5f, 0.5f, 0.5f);
 		glVertex3f(-500.0f, 0.0f, -500.0f);
 		glVertex3f(-500.0f, 0.0f, 500.0f);
-		glColor3f(0.1f, 1.0f, 0.1f);
+		glColor3f(0.3f, 0.3f, 0.3f);
 		glVertex3f(500.0f, 0.0f, 500.0f);
 		glVertex3f(500.0f, 0.0f, -500.0f);
 	}
@@ -88,10 +89,8 @@ void renderScene(void)
 
 	//Draw 36 buildings
 	float spacing = 20.0f;
-	float bldg_height = 40.0f;
+	float bldg_height = 30.0f;
 	float bldg_width = 10.0f;
-	float h_offset = 0.0f;
-	float w_offset = 0.0f;
 
 	int iterations = 0;
 
@@ -105,12 +104,13 @@ void renderScene(void)
 			Building building(bldg_width, bldg_height);
 			building.draw();
 			glPopMatrix();
-
-			iterations++;
-			h_offset = 0.0f;
-			w_offset = 0.0f;
 		}
 	}
+
+	/* Display coordinates if camera is in developer mode.*/
+	if (camera.isDevView())
+		camera.drawCameraInfo();
+
 	glutSwapBuffers();
 }
 /* Handle key press events */
@@ -120,16 +120,16 @@ void keyPress(unsigned char key, int xx, int yy)
 	switch (key)
 	{
 		case MOVE_FWD:
-			camera.setDeltaMove(0.08f);
+			camera.setDeltaMove(0.1f);
 			break;
 		case MOVE_LEFT:
-			camera.setDeltaAngle(-0.001f);
+			camera.setDeltaAngle(-0.005f);
 			break;
 		case MOVE_BACK:
-			camera.setDeltaMove(-0.08f);
+			camera.setDeltaMove(-0.1f);
 			break;
 		case MOVE_RIGHT:
-			camera.setDeltaAngle(0.001f);
+			camera.setDeltaAngle(0.005f);
 			break;
 		case JUMP_KEY:
 			camera.jumpState(true); //Jump

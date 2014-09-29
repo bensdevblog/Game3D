@@ -19,7 +19,10 @@ class Camera
 	public:
 		/* Constructor */
 		Camera() { };
-		
+
+		/* Draw coords, vectors, deltas etc. */
+		void drawCameraInfo(void);
+
 		/* Change camera direction and position */
 		void computePos(float deltaMove);
 		void computeDir(float deltaAngle);

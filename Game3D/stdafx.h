@@ -15,8 +15,10 @@
 #include "targetver.h"
 
 #include "glut.h"
+#include "freeglut.h"
 #include <stdio.h>
 #include <tchar.h>
+#include <string.h>
 #include <iostream>
 #include <time.h>
 #include <math.h>

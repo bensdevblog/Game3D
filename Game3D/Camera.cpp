@@ -3,8 +3,58 @@
 
 using namespace std;
 
+void Camera::drawCameraInfo(void)
+{
+	glColor3f(1.0, 1.0, 1.0);
+
+	/* Position and draw X coord display */
+	glRasterPos3f(getCamX() + sin(getAngleOfRot() + -0.6f), 
+		getCamY() + getYvector() - 0.24f + getPitch(),
+		getCamZ() + -cos(getAngleOfRot() + -0.6f));
+
+	char cam_x_buffer[256];
+	sprintf_s(cam_x_buffer, "%s: %f","Current x", getCamX());
+	string camx_str = cam_x_buffer;
+
+	for (string::iterator c = (&camx_str)->begin(); c != (&camx_str)->end(); ++c)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+	}
+
+	/* Position and draw Y coord display */
+	glRasterPos3f(getCamX() + sin(getAngleOfRot() + -0.6f),
+		getCamY() + getYvector() - 0.26f + getPitch(),
+		getCamZ() + -cos(getAngleOfRot() + -0.6f));
+
+	char cam_y_buffer[256];
+	sprintf_s(cam_y_buffer, "%s: %f", "Current y", getCamY());
+	string camy_str = cam_y_buffer;
+
+	for (string::iterator c = (&camy_str)->begin(); c != (&camy_str)->end(); ++c)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+	}
+
+	/* Position and draw Z coord display */
+	glRasterPos3f(getCamX() + sin(getAngleOfRot() + -0.6f),
+		getCamY() + getYvector() - 0.28f + getPitch(),
+		getCamZ() + -cos(getAngleOfRot() + -0.6f));
+
+	char cam_z_buffer[256];
+	sprintf_s(cam_z_buffer, "%s: %f", "Current z", getCamZ());
+	string camz_str = cam_z_buffer;
+
+	for (string::iterator c = (&camz_str)->begin(); c != (&camz_str)->end(); ++c)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+	}
+}
+
 void Camera::computePos(float deltaMove)
 {
+	if (developer_view)
+		deltaMove += (deltaMove * 2); //Double movement speed in developer mode
+
 	cam_x += deltaMove * x_vector * 0.1f;
 	cam_z += deltaMove * z_vector * 0.1f;
 }
